@@ -21,6 +21,7 @@ public class Result {
     public enum Status{
         Win,
         Lose,
-        NotEnoughMoney
+        NotEnoughMoney,
+        IncorrectLinesNumber
     }
 }

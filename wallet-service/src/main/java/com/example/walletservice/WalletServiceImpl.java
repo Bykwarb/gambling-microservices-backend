@@ -1,16 +1,17 @@
 package com.example.walletservice;
 
-import jakarta.ws.rs.NotFoundException;
+import com.example.walletservice.utils.WalletContextHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class WalletServiceImpl implements WalletService {
-
     private final WalletRepository walletRepository;
+    private final Logger logger = LoggerFactory.getLogger(WalletServiceImpl.class);
 
     public WalletServiceImpl(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
@@ -25,7 +26,8 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public Wallet getWalletById(Long id) throws WalletNotFoundException {
         Optional<Wallet> optionalWallet = walletRepository.findById(id);
-        if (optionalWallet.isEmpty()){
+        if (optionalWallet.isEmpty()) {
+            logger.debug("Wallet not found. Wallet-id: {}. Correlation-id: {}", id, WalletContextHolder.getContext().getCorrelationId());
             throw new WalletNotFoundException("Wallet not founded");
         }
         return optionalWallet.get();
@@ -34,7 +36,8 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public Wallet getWalledByUserId(Long userId) throws WalletNotFoundException {
         Wallet wallet = walletRepository.getWalletByUserId(userId);
-        if (Objects.isNull(wallet)){
+        if (Objects.isNull(wallet)) {
+            logger.debug("Wallet not found. User-id: {}. Correlation-id: {}", userId, WalletContextHolder.getContext().getCorrelationId());
             throw new WalletNotFoundException("Wallet not founded");
         }
         return wallet;
@@ -43,7 +46,8 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public Wallet depositToWalletByUserId(Long userId, Double value) throws WalletNotFoundException {
         Wallet wallet = walletRepository.getWalletByUserId(userId);
-        if (Objects.isNull(wallet)){
+        if (Objects.isNull(wallet)) {
+            logger.debug("Wallet not found. User-id: {}. Correlation-id: {}", userId, WalletContextHolder.getContext().getCorrelationId());
             throw new WalletNotFoundException("Wallet not founded");
         }
         wallet.setValue(wallet.getValue() + value);
@@ -54,7 +58,8 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public Wallet depositToWalletByWalletId(Long walletId, Double value) throws WalletNotFoundException {
         Optional<Wallet> optionalWallet = walletRepository.findById(walletId);
-        if (optionalWallet.isEmpty()){
+        if (optionalWallet.isEmpty()) {
+            logger.debug("Wallet not found. Wallet-id: {}. Correlation-id: {}", walletId, WalletContextHolder.getContext().getCorrelationId());
             throw new WalletNotFoundException("Wallet not founded");
         }
         Wallet wallet = optionalWallet.get();
@@ -67,10 +72,11 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public Wallet payFromWalletByUserId(Long userId, Double value) throws WalletNotFoundException, NotEnoughValueException {
         Wallet wallet = walletRepository.getWalletByUserId(userId);
-        if (Objects.isNull(wallet)){
+        if (Objects.isNull(wallet)) {
             throw new WalletNotFoundException("Wallet not founded");
         }
-        if (value > wallet.getValue()){
+        if (value > wallet.getValue()) {
+            logger.debug("Not enough money to complete transaction. User-id: {}. Value: {}. Correlation-id: {}", userId, value, WalletContextHolder.getContext().getCorrelationId());
             throw new NotEnoughValueException("Insufficient funds to complete the transaction");
         }
         wallet.setValue(wallet.getValue() - value);
@@ -81,11 +87,12 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public Wallet payFromWalletByWalletId(Long walletId, Double value) throws NotEnoughValueException, WalletNotFoundException {
         Optional<Wallet> optionalWallet = walletRepository.findById(walletId);
-        if (optionalWallet.isEmpty()){
+        if (optionalWallet.isEmpty()) {
             throw new WalletNotFoundException("Wallet not founded");
         }
         Wallet wallet = optionalWallet.get();
-        if (value > wallet.getValue()){
+        if (value > wallet.getValue()) {
+            logger.debug("Not enough money to complete transaction. Wallet-id: {}. Value: {}. Correlation-id: {}", walletId, value, WalletContextHolder.getContext().getCorrelationId());
             throw new NotEnoughValueException("Insufficient funds to complete the transaction");
         }
         wallet.setValue(wallet.getValue() - value);

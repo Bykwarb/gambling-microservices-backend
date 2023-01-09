@@ -1,12 +1,13 @@
-package com.example.userservice;
+package com.example.userservice.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity(name = "USER")
 @Getter
 @Setter
 @Table(name = "user")
@@ -17,7 +18,7 @@ public class UserEntity {
     private Long userId;
     @Column(name = "username")
     private String name;
-    @OneToMany(mappedBy = "userId")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.ALL)
     private List<Game> history;
 
 }

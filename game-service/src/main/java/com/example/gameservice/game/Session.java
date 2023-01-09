@@ -8,7 +8,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Session {
-    private int gameId;
+    private String gameId;
     private double betValue;
     private int lines;
     private double credits;
