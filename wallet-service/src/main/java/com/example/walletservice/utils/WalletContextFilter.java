@@ -21,7 +21,8 @@ public class WalletContextFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         WalletContextHolder.getContext().setCorrelationId(httpServletRequest.getHeader(WalletContext.CORRELATION_ID));
-        //logger.debug("WalletContextFilter Correlation id: {}", WalletContextHolder.getContext().getCorrelationId());
+        WalletContextHolder.getContext().setAuthToken(httpServletRequest.getHeader(WalletContext.AUTH_TOKEN));
+        logger.debug("WalletContextFilter Correlation id: {}", WalletContextHolder.getContext().getCorrelationId());
         filterChain.doFilter(httpServletRequest, servletResponse);
      }
 

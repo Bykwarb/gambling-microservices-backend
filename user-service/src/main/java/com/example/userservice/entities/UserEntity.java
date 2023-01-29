@@ -3,8 +3,6 @@ package com.example.userservice.entities;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "USER")
@@ -16,9 +14,10 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long userId;
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String name;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "userId", cascade = CascadeType.ALL)
+    @OrderBy("date")
     private List<Game> history;
 
 }

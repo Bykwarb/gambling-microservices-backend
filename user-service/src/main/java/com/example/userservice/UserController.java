@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/user-service/")
 public class UserController {
     private Logger logger = LoggerFactory.getLogger(UserController.class);
+    @Qualifier("UserService")
     private final UserService userService;
 
     public UserController(UserService userService) {

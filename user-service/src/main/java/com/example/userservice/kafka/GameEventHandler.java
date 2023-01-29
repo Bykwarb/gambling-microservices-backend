@@ -35,11 +35,12 @@ public class GameEventHandler {
             logger.debug("Received message from game-service. Game: {}. Correlation-id: {}.", gameDTO, key);
             UserEntity user = optionalUser.get();
             Game game = new Game();
+            game.setGameId(gameDTO.getGameId());
             game.setResult(gameDTO.getResult());
             game.setBet(gameDTO.getBet());
             game.setStatus(gameDTO.getStatus());
             game.setUserId(user.getUserId());
-            game.setLocalDateTime(gameDTO.getLocalDateTime());
+            game.setDate(gameDTO.getLocalDateTime());
             user.getHistory().add(game);
             userRepository.save(user);
         }

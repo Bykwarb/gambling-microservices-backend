@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class GameContext {
     public static final String CORRELATION_ID = "correlation-id";
-    public static final String AUTH_TOKEN     = "Authorization";
+    public static final String AUTH_TOKEN = "Authorization";
 
     private static final ThreadLocal<String> correlationId= new ThreadLocal<String>();
     private static final ThreadLocal<String> authToken= new ThreadLocal<String>();
@@ -20,6 +20,7 @@ public class GameContext {
     public static HttpHeaders getHttpHeaders(){
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(CORRELATION_ID, getCorrelationId());
+        httpHeaders.set(AUTH_TOKEN, getAuthToken());
         return httpHeaders;
     }
 }

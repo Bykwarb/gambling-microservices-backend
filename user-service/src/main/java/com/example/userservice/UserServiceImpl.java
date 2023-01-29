@@ -6,13 +6,15 @@ import com.example.userservice.repository.UserRepository;
 import com.example.userservice.utils.UserContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
+@Service("UserService")
 public class UserServiceImpl implements UserService{
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+    @Qualifier("UserRepo")
     private final UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -32,6 +34,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public UserEntity getUserByUserName(String username) {
+        return userRepository.getUserEntityByName(username);
+    }
+
+    @Override
     public UserEntity getUserById(Long id) throws UserNotFoundedException {
         Optional<UserEntity> optionalUser = userRepository.findById(id);
         if(optionalUser.isEmpty()){
@@ -40,4 +47,6 @@ public class UserServiceImpl implements UserService{
         }
         return optionalUser.get();
     }
+
+
 }

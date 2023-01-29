@@ -9,8 +9,8 @@ import java.util.List;
 @Component
 public class FilterUtils {
     public static final String CORRELATION_ID = "correlation-id";
-    public static final String AUTH_TOKEN     = "Authorization";
-    public static final String USER_ID        = "tmx-user-id";
+    public static final String AUTH_TOKEN = "Authorization";
+    public static final String USER_ID = "tmx-user-id";
     public static final String PRE_FILTER_TYPE = "pre";
     public static final String POST_FILTER_TYPE = "post";
     public static final String ROUTE_FILTER_TYPE = "route";
@@ -35,5 +35,15 @@ public class FilterUtils {
 
     public ServerWebExchange setCorrelationId(ServerWebExchange exchange, String correlationId) {
         return this.setRequestHeader(exchange, CORRELATION_ID, correlationId);
+    }
+
+    public String getAuthToken(HttpHeaders headers){
+        if (headers.get(AUTH_TOKEN) != null){
+            List<String> header = headers.get(AUTH_TOKEN);
+            return header.stream().findFirst().get();
+        }
+        else {
+            return null;
+        }
     }
 }

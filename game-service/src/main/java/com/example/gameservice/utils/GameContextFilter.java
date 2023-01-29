@@ -21,7 +21,8 @@ public class GameContextFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         GameContextHolder.getContext().setCorrelationId(httpServletRequest.getHeader(GameContext.CORRELATION_ID));
-        //logger.debug("GameContextFilter Correlation id: {}", GameContextHolder.getContext().getCorrelationId());
+        GameContextHolder.getContext().setAuthToken(httpServletRequest.getHeader(GameContext.AUTH_TOKEN));
+        logger.debug("GameContextFilter Correlation id: {}", GameContextHolder.getContext().getCorrelationId());
         filterChain.doFilter(httpServletRequest, servletResponse);
      }
 

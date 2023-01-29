@@ -1,5 +1,9 @@
-package com.example.walletservice;
+package com.example.walletservice.service;
 
+import com.example.walletservice.exception.NotEnoughValueException;
+import com.example.walletservice.entity.Wallet;
+import com.example.walletservice.exception.WalletNotFoundException;
+import com.example.walletservice.repo.WalletRepository;
 import com.example.walletservice.utils.WalletContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -22,6 +22,7 @@ public class GameHistoryListener implements ApplicationListener<SendGameToGameHi
     public void onApplicationEvent(SendGameToGameHistoryEvent event) {
         GameDTO gameDTO = new GameDTO();
         Result result = event.getResult();
+        gameDTO.setGameId(result.getSession().getGameId());
         gameDTO.setBet(result.getSession().getBetValue());
         gameDTO.setUserId(result.getSession().getBetterId());
         gameDTO.setStatus(result.getStatus());

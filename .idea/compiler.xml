@@ -8,16 +8,15 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="config-server" />
+        <module name="auth-service" />
         <module name="game-service" />
         <module name="api-gateway" />
-        <module name="casino" />
         <module name="user-service" />
         <module name="eureka-server" />
         <module name="wallet-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="auth-service" target="17" />
       <module name="eureka-service" target="17" />
       <module name="roulette-service" target="17" />
     </bytecodeTargetLevel>

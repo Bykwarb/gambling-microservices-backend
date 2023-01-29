@@ -9,12 +9,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class GameService {
     @Autowired
     private SlotMachine slotMachine;
     private Logger logger = LoggerFactory.getLogger(GameService.class);
     public Result checkYourLuck(Session session){
+        session.setGameId(UUID.randomUUID().toString());
         if (session.getCredits() < session.getBetValue()){
             Result result = new Result();
             result.setStatus(Result.Status.NotEnoughMoney);

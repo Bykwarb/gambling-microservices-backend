@@ -6,5 +6,6 @@ import com.example.userservice.entities.UserEntity;
 public interface UserService {
     void createUser(UserDTO user);
     void deleteUser(Long id);
+    UserEntity getUserByUserName(String username);
     UserEntity getUserById(Long id) throws UserNotFoundedException;
 }

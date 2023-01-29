@@ -1,4 +1,4 @@
-package com.example.walletservice;
+package com.example.walletservice.exception;
 
 public class WalletNotFoundException extends Exception{
     public WalletNotFoundException(String message) {
