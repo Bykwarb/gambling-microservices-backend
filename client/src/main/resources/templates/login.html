@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - login/signup form animation</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="form-structor">
+	<form method="post" th:action="@{/registration}" th:object="${userDto}">
+	<div class="signup">
+		<h2 class="form-title" id="signup"><span>or</span>Sign up</h2>
+		<div class="form-holder">
+			<input type="text" class="input" placeholder="Name" th:field="*{username}"/>
+			<input type="email" class="input" placeholder="Email" th:field="*{email}"/>
+			<input type="password" class="input" placeholder="Password" th:field="*{password}"/>
+		</div>
+
+		<div th:if="${param.exist}">
+			<div class="alert alert-info">
+				<span style="color: red">User with same name already exist</span>
+			</div>
+		</div>
+
+		<div th:if="${param.success}">
+			<div class="alert alert-info">
+				<span style="color: white">Register is successful</span>
+			</div>
+		</div>
+
+		<input type="submit" class="submit-btn" value="Sign up"/>
+	</div>
+	</form>
+	<form method="post" th:action="@{/login}" th:object="${login}">
+	<div class="login slide-up">
+		<div class="center">
+			<h2 class="form-title" id="login"><span>or</span>Log in</h2>
+			<div class="form-holder">
+				<input type="email" class="input" placeholder="Email" th:field="*{email}"/>
+				<input type="password" class="input" placeholder="Password" th:field="*{password}"/>
+			</div>
+			<input type="submit" class="submit-btn">Log in</button>
+		</div>
+	</div>
+	</form>
+</div>
+<!-- partial -->
+  <script  src="/js/script.js"></script>
+
+</body>
+</html>

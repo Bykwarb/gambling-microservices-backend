@@ -1,13 +1,11 @@
 package com.example.authservice.user;
 
-import com.example.authservice.AuthController;
-import com.example.authservice.utils.UserRequestDto;
+import com.example.authservice.utils.UserDto;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
     Optional<User> getByUsrEmail(String email);
     User getUserByEmail(String email);
-    void saveUser(UserRequestDto userRequestDto);
+    void saveUser(UserDto userDto);
 }

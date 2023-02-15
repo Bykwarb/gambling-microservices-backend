@@ -8,7 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.example.walletservice", "com.example.userservice.security.jwt"})
+@ComponentScan(basePackages = {"com.example.walletservice", "com.example.userservice.security.jwt", "com.example.userservice.utils"})
 public class WalletServiceApplication {
 
     public static void main(String[] args) {

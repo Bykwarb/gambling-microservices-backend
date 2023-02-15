@@ -1,14 +1,11 @@
 package com.example.authservice;
 
-import com.example.authservice.security.SecurityUser;
-import com.example.authservice.security.jwt.JwtTokenProvider;
 import com.example.authservice.user.UserService;
 import com.example.authservice.utils.AuthenticationRequestDto;
-import com.example.authservice.utils.UserRequestDto;
+import com.example.authservice.utils.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,22 +13,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     @Autowired
     private AuthService authService;
-    @Autowired
-    private UserService userService;
     @GetMapping("/auth")
-    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequestDto request){
-         return authService.auth(request.getEmail(), request.getPassword());
+    public ResponseEntity<?> authenticate(@RequestParam("email") String email, @RequestParam("password") String password){
+         return authService.auth(email, password);
     }
-    @GetMapping("/verify")
-    public ResponseEntity<UsernamePasswordAuthenticationToken> verifyToken(@RequestParam("token") String token){
-        return ResponseEntity.ok(authService.verify(token));
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody UserRequestDto userRequestDto){
-        userService.saveUser(userRequestDto);
-        return ResponseEntity.ok("");
-    }
-
 
 }

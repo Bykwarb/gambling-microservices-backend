@@ -1,7 +1,8 @@
 package com.example.gameservice.game;
 
+import com.example.gameservice.game.entity.Result;
+import com.example.gameservice.game.entity.Session;
 import com.example.gameservice.game.utils.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -26,9 +27,9 @@ public class SlotMachineImpl implements SlotMachine {
        Result result = paymaster.calculateResult(winLines,session);
        result.setSymbols(symbols);
        result.setWinLines(winLines);
-       if (result.getStatus() == Result.Status.Win){
-           result.getSession().setCredits(session.getCredits() + result.getResult());
-       }
+       //if (result.getStatus() == Result.Status.Win){
+       //    result.getSession().setCredits(session.getCredits() + result.getResult());
+       //}
        return result;
     }
 

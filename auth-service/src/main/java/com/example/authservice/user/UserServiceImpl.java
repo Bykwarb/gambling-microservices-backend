@@ -1,6 +1,6 @@
 package com.example.authservice.user;
 
-import com.example.authservice.utils.UserRequestDto;
+import com.example.authservice.utils.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.ComponentScan;
@@ -30,11 +30,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void saveUser(UserRequestDto userRequestDto) {
+    public void saveUser(UserDto userDto) {
         User user = new User();
-        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
-        user.setEmail(userRequestDto.getEmail());
-        user.setUsername(userRequestDto.getUsername());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setEmail(userDto.getEmail());
+        user.setUsername(userDto.getUsername());
         user.setRole(Role.USER);
         user.setAccountEnabled(true);
         user.setAccountNonExpired(true);

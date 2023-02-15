@@ -23,10 +23,8 @@ import java.util.Date;
 public class JwtTokenProvider {
     @Value("${security.key}")
     private String claimsKey ;
-    private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
-    public JwtTokenProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder, PasswordEncoder passwordEncoder1) {
-        this.userDetailsService = userDetailsService;
+    public JwtTokenProvider(PasswordEncoder passwordEncoder1) {
         this.passwordEncoder = passwordEncoder1;
     }
     private final static String key = Base64.getEncoder().encodeToString(SecurityConstant.SECRET_KEY.getBytes());

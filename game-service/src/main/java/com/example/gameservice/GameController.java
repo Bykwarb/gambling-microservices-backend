@@ -1,17 +1,14 @@
 package com.example.gameservice;
 
 import com.example.gameservice.events.SendGameToGameHistoryEvent;
-import com.example.gameservice.game.Result;
-import com.example.gameservice.game.Session;
-import com.example.gameservice.utils.GameContextHolder;
+import com.example.gameservice.game.entity.Result;
+import com.example.gameservice.game.entity.Session;
+import com.example.userservice.utils.ClientContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/game/slot-machine")
@@ -27,13 +24,12 @@ public class GameController {
         this.publisher = publisher;
     }
 
-    @CrossOrigin
-    @GetMapping("/play")
+    @PostMapping("/play")
     public ResponseEntity<Result> play(@RequestBody Session session){
-        logger.debug("Play. Correlation-id: {}. Session: {}.", GameContextHolder.getContext().getCorrelationId(), session);
+        logger.debug("Play. Correlation-id: {}. Session: {}.", ClientContextHolder.getContext().getCorrelationId(), session);
         Result result = gameService.checkYourLuck(session);
-        logger.debug("Result. Correlation-id: {}. Result: {}.", GameContextHolder.getContext().getCorrelationId(), result);
-        publisher.publishEvent(new SendGameToGameHistoryEvent(result));
+        logger.debug("Result. Correlation-id: {}. Result: {}.", ClientContextHolder.getContext().getCorrelationId(), result);
+        publisher.publishEvent(new SendGameToGameHistoryEvent(result, session));
         return ResponseEntity.ok(result);
     }
 

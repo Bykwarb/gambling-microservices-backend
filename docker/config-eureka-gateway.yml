@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  config-server:
+    image: config-server:latest
+    build: config-server/
+    hostname: config-server
+    container_name: config-server
+    ports:
+      - "8071:8071"
+    networks:
+      - cea
+  eureka-server:
+    image: eureka-server:latest
+    build: eureka-server/
+    hostname: eureka-server
+    container_name: eureka-server
+    ports:
+      - "8070:8070"
+    depends_on:
+      - config-server
+    networks:
+      - cea
+    restart: on-failure
+  api-gateway:
+    image: api-gateway:latest
+    build: api-gateway
+    hostname: api-gateway
+    container_name: api-gateway
+    ports:
+      - "8072:8072"
+    depends_on:
+      - config-server
+      - eureka-server
+    networks:
+      - cea
+    healthcheck:
+      test: "sh status.sh"
+      start_period: 5s
+
+networks:
+  cea:
+    driver: bridge
