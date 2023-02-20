@@ -19,8 +19,19 @@
         <label>
           <input type="checkbox" name="autoplay" id="autoplay" />Autoplay
         </label>
-      </div>
+        <div id="balance">Balance:</div>
+        <div class="controls-group">
+          <button type="button" id="decreaseBet">-</button>
+          <span>Bet: <span id="betValue">5</span></span>
+          <button type="button" id="increaseBet">+</button>
+        </div>
+        <div class="controls-group">
+          <button type="button" id="decreaseLines">-</button>
+          <span>Lines: <span id="linesValue">1</span></span>
+          <button type="button" id="increaseLines">+</button>
+        </div>
       <script type="module" src="/js/index.js"></script>
+        <script src="/js/linesBetScript.js"></script>
     </div>
   </body>
 </html>

@@ -25,7 +25,6 @@ public class Paymaster {
             result.setResult(sum);
             result.setStatus(Result.Status.Win);
         }else {
-            sum -= session.getBetValue();
             result.setResult(sum);
             result.setStatus(Result.Status.Lose);
         }

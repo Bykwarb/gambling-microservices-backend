@@ -29,7 +29,8 @@ public class GameController {
     @PostMapping("/play")
     public ResponseEntity<Result> play(@RequestBody Session session){
         session.setGameId(UUID.randomUUID().toString());
-        logger.debug("Play. Game-id {}. Correlation-id: {}.", session.getGameId(), ClientContextHolder.getContext().getCorrelationId());
+        session.setBetterUserName(ClientContextHolder.getContext().getUserName());
+        logger.debug("Play. Game-id {}. Session {}. Correlation-id: {}.", session.getGameId(), session, ClientContextHolder.getContext().getCorrelationId());
         Result result = gameService.checkYourLuck(session);
         logger.debug("Result. Game-id {}. Correlation-id: {}. Result: {}.", session.getGameId(), ClientContextHolder.getContext().getCorrelationId(), result);
         publisher.publishEvent(new SendGameToGameHistoryEvent(result, session));

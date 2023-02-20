@@ -8,7 +8,9 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 24px;
+  font-family: sans-serif;
 }
+
 
 @media only screen and (max-width: 90vw) {
   body {
@@ -39,12 +41,84 @@ body {
 }
 
 #controls {
-  background-color: rgba(255, 255, 255, 0.9);
-  height: 5vh;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 30px;
+  padding: 8px;
+  background-color: #f0f0f0;
+  font-family: sans-serif;
+  font-size: 14px;
+  margin-top: 3px;
+}
+
+#controls button {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#controls label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+#controls label input[type="checkbox"] {
+  margin-right: 6px;
+}
+
+#controls .controls-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#controls .controls-group span {
+  font-size: 14px;
+  margin: 0 8px;
+}
+
+#controls .controls-group button {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  color: #444;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+#controls .controls-group button:hover {
+  background-color: #f0f0f0;
+}
+
+@media (max-width: 800px) {
+  #controls {
+    font-size: 12px;
+  }
+
+  #controls button {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  #controls label {
+    font-size: 12px;
+  }
+
+  #controls .controls-group span {
+    font-size: 12px;
+    margin: 0 6px;
+  }
+
+  #controls .controls-group button {
+    padding: 2px 6px;
+    font-size: 12px;
+  }
 }
 
 #popup {

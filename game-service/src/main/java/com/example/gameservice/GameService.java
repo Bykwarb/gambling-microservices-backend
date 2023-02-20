@@ -29,6 +29,9 @@ public class GameService {
 
     public Result checkYourLuck(Session session){
         Response response = debitedFromWallet(session);
+        if (response == null){
+            return errorHandle(Result.Status.ServiceUnavailable);
+        }
         if (response.getMessage().equals("There are not enough funds on the wallet to complete the transaction")){
             return errorHandle(Result.Status.NotEnoughMoney);
         }
@@ -37,8 +40,8 @@ public class GameService {
         }
         result = slotMachine.play(session);
         if (result.getStatus() == Result.Status.Win){
-            Response response1 = depositToWallet(session, result);
-            logger.debug(response1.getMessage());
+            Response depositResponse = depositToWallet(session, result);
+            logger.debug(depositResponse.getMessage());
         }
         return result;
     }
@@ -67,11 +70,7 @@ public class GameService {
         try {
             walletResponse = restTemplate.exchange(url, HttpMethod.PUT, getEntity(), Response.class);
         }catch (HttpServerErrorException ex){
-            if (ex.getStatusCode() == HttpStatus.SERVICE_UNAVAILABLE) {
-                return null;
-            } else {
-                throw ex;
-            }
+            return null;
         }
         return walletResponse.getBody();
     }

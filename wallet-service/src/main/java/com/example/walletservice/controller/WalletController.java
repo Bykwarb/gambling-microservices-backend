@@ -41,8 +41,9 @@ public class WalletController {
         return ResponseEntity.ok(walletService.getWalletById(walletId));
     }
 
-    @GetMapping("/get/user-name/{userName}")
-    public ResponseEntity<Wallet> getWalletByUserName(@PathVariable("userName") String userName) throws WalletNotFoundException {
+    @GetMapping("/get/user-name/")
+    public ResponseEntity<Wallet> getWalletByUserName() throws WalletNotFoundException {
+        String userName = ClientContextHolder.getContext().getUserName();
         logger.debug("Get wallet by user-name {}, with correlation-id: {}",  userName, ClientContextHolder.getContext().getCorrelationId());
         return ResponseEntity.ok(walletService.getWalledByUserName(userName));
     }
