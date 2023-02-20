@@ -12,8 +12,6 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -28,18 +26,19 @@ public class GameEventHandler {
 
     @KafkaListener(topics = "game-message")
     public void GameHistoryMessageReceive(@Payload GameDTO gameDTO, @Header(KafkaHeaders.RECEIVED_KEY) String key){
-        Optional<UserEntity> optionalUser = userRepository.findById(gameDTO.getUserId());
+        Optional<UserEntity> optionalUser = userRepository.getUserEntityByName(gameDTO.getUserName());
         if (optionalUser.isEmpty()){
-            logger.debug("Received message from game-service. User not found. User-id: {}. Correlation-id: {}. Game-id: {}.", gameDTO.getUserId(), key, gameDTO.getGameId());
+            logger.debug("Received message from game-service. User not found. Username: {}. Correlation-id: {}. Game-id: {}.", gameDTO.getUserName(), key, gameDTO.getGameId());
         }else {
             logger.debug("Received message from game-service. Game: {}. Correlation-id: {}.", gameDTO, key);
             UserEntity user = optionalUser.get();
             Game game = new Game();
+            game.setGameId(gameDTO.getGameId());
             game.setResult(gameDTO.getResult());
             game.setBet(gameDTO.getBet());
             game.setStatus(gameDTO.getStatus());
             game.setUserId(user.getUserId());
-            game.setLocalDateTime(gameDTO.getLocalDateTime());
+            game.setDate(gameDTO.getLocalDateTime());
             user.getHistory().add(game);
             userRepository.save(user);
         }

@@ -1,7 +1,7 @@
 package com.example.gameservice.game.utils;
 
-import com.example.gameservice.game.Result;
-import com.example.gameservice.game.Session;
+import com.example.gameservice.game.entity.Result;
+import com.example.gameservice.game.entity.Session;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -24,12 +24,10 @@ public class Paymaster {
         if (sum != 0){
             result.setResult(sum);
             result.setStatus(Result.Status.Win);
-            result.setSession(session);
         }else {
             sum -= session.getBetValue();
             result.setResult(sum);
             result.setStatus(Result.Status.Lose);
-            result.setSession(session);
         }
         return result;
     }

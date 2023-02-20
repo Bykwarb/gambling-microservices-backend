@@ -1,6 +1,7 @@
 package com.example.gameservice.events;
 
-import com.example.gameservice.game.Result;
+import com.example.gameservice.game.entity.Result;
+import com.example.gameservice.game.entity.Session;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
@@ -9,9 +10,11 @@ import org.springframework.context.ApplicationEvent;
 @Setter
 public class SendGameToGameHistoryEvent extends ApplicationEvent {
     private Result result;
-    public SendGameToGameHistoryEvent(Result result) {
+    private Session session;
+    public SendGameToGameHistoryEvent(Result result, Session session) {
         super(result);
         this.result = result;
+        this.session = session;
     }
 
 

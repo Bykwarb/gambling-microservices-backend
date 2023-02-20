@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @ToString
 public class GameDTO {
     private String gameId;
-    private Long userId;
+    private String userName;
     private Game.Status status;
     private Double bet;
     private Double result;
