@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/v1/game/slot-machine")
 public class GameController {
@@ -26,9 +28,10 @@ public class GameController {
 
     @PostMapping("/play")
     public ResponseEntity<Result> play(@RequestBody Session session){
-        logger.debug("Play. Correlation-id: {}. Session: {}.", ClientContextHolder.getContext().getCorrelationId(), session);
+        session.setGameId(UUID.randomUUID().toString());
+        logger.debug("Play. Game-id {}. Correlation-id: {}.", session.getGameId(), ClientContextHolder.getContext().getCorrelationId());
         Result result = gameService.checkYourLuck(session);
-        logger.debug("Result. Correlation-id: {}. Result: {}.", ClientContextHolder.getContext().getCorrelationId(), result);
+        logger.debug("Result. Game-id {}. Correlation-id: {}. Result: {}.", session.getGameId(), ClientContextHolder.getContext().getCorrelationId(), result);
         publisher.publishEvent(new SendGameToGameHistoryEvent(result, session));
         return ResponseEntity.ok(result);
     }

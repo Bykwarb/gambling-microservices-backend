@@ -1,6 +1,7 @@
 package com.example.userservice.security.jwt;
 
 import com.example.authservice.user.Role;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -8,9 +9,12 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
@@ -39,10 +43,14 @@ public class JwtTokenFilter extends GenericFilterBean {
                 }
             }
 
-        }catch (JwtAuthenticationException e){
-            SecurityContextHolder.clearContext();
-            ((HttpServletResponse) servletResponse).sendError(e.getHttpStatus().value());
+        }catch (Exception e){
+            ((HttpServletResponse) servletResponse).sendError(HttpStatus.FORBIDDEN.value());
         }
         filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    @ExceptionHandler(value = ExpiredJwtException.class)
+    public ResponseEntity<String> jwtAuthExp(ExpiredJwtException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 }

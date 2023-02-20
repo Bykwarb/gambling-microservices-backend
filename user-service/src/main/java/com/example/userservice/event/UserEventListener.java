@@ -1,4 +1,4 @@
-package com.example.userservice.kafka.event;
+package com.example.userservice.event;
 
 import com.example.userservice.entities.UserDTO;
 import com.example.userservice.utils.ClientContextHolder;
@@ -17,7 +17,7 @@ public class UserEventListener implements ApplicationListener<SendUserToAuthServ
     @Override
     public void onApplicationEvent(SendUserToAuthServiceEvent event) {
         UserDTO userDTO = event.getUserDTO();
-        log.debug("Sending message to Kafka. GameDTO: {}. Correlation-id: {}", userDTO, ClientContextHolder.getContext().getCorrelationId());
+        log.debug("Sending message to Kafka. UserDTO: {}. Correlation-id: {}", userDTO, ClientContextHolder.getContext().getCorrelationId());
         kafkaTemplate.send(topicName,ClientContextHolder.getContext().getCorrelationId(), userDTO);
     }
 }

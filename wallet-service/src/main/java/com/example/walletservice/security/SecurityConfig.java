@@ -23,6 +23,7 @@ public class SecurityConfig {
         httpSecurity.httpBasic().disable();
         httpSecurity.csrf().disable();
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        httpSecurity.authorizeHttpRequests().requestMatchers("/v1/wallet/create").permitAll();
         httpSecurity.authorizeHttpRequests().anyRequest().authenticated();
         httpSecurity.apply(jwtConfigurer);
         return httpSecurity.build();

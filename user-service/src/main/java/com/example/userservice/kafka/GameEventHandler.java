@@ -1,4 +1,4 @@
-package com.example.userservice.kafka.event;
+package com.example.userservice.kafka;
 
 import com.example.userservice.entities.GameDTO;
 import com.example.userservice.entities.UserEntity;
@@ -26,9 +26,9 @@ public class GameEventHandler {
 
     @KafkaListener(topics = "game-message")
     public void GameHistoryMessageReceive(@Payload GameDTO gameDTO, @Header(KafkaHeaders.RECEIVED_KEY) String key){
-        Optional<UserEntity> optionalUser = userRepository.findById(gameDTO.getUserId());
+        Optional<UserEntity> optionalUser = userRepository.getUserEntityByName(gameDTO.getUserName());
         if (optionalUser.isEmpty()){
-            logger.debug("Received message from game-service. User not found. User-id: {}. Correlation-id: {}. Game-id: {}.", gameDTO.getUserId(), key, gameDTO.getGameId());
+            logger.debug("Received message from game-service. User not found. Username: {}. Correlation-id: {}. Game-id: {}.", gameDTO.getUserName(), key, gameDTO.getGameId());
         }else {
             logger.debug("Received message from game-service. Game: {}. Correlation-id: {}.", gameDTO, key);
             UserEntity user = optionalUser.get();

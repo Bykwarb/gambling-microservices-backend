@@ -26,7 +26,7 @@ public class GameHistoryListener implements ApplicationListener<SendGameToGameHi
         Session session = event.getSession();
         gameDTO.setGameId(session.getGameId());
         gameDTO.setBet(session.getBetValue());
-        gameDTO.setUserId(session.getBetterId());
+        gameDTO.setUserName(session.getBetterUserName());
         gameDTO.setStatus(result.getStatus());
         gameDTO.setResult(result.getResult());
         gameDTO.setLocalDateTime(LocalDateTime.now());

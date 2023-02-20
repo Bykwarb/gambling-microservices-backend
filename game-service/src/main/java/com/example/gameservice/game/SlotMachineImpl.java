@@ -27,9 +27,6 @@ public class SlotMachineImpl implements SlotMachine {
        Result result = paymaster.calculateResult(winLines,session);
        result.setSymbols(symbols);
        result.setWinLines(winLines);
-       //if (result.getStatus() == Result.Status.Win){
-       //    result.getSession().setCredits(session.getCredits() + result.getResult());
-       //}
        return result;
     }
 

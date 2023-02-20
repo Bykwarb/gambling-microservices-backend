@@ -1,4 +1,4 @@
-package com.example.userservice.kafka.event;
+package com.example.userservice.event;
 
 import com.example.userservice.entities.UserDTO;
 import lombok.Getter;

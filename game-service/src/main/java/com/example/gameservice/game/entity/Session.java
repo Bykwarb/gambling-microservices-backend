@@ -12,5 +12,5 @@ public class Session {
     private double betValue;
     private int lines;
     private double credits;
-    private long betterId;
+    private String betterUserName;
 }

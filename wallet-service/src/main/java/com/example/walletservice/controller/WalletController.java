@@ -1,5 +1,6 @@
 package com.example.walletservice.controller;
 
+import com.example.userservice.entities.WalletDto;
 import com.example.userservice.utils.ClientContextHolder;
 import com.example.walletservice.entity.Wallet;
 import com.example.walletservice.exception.NotEnoughValueException;
@@ -27,23 +28,23 @@ public class WalletController {
     }
 
     @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Response> createWallet(@RequestParam("uid")Long userId){
-        walletService.createWallet(userId);
-        logger.debug("Create wallet with correlation-id: {}", ClientContextHolder.getContext().getCorrelationId());
+    public ResponseEntity<Response> createWallet(@RequestBody WalletDto walletDto){
+        walletService.createWallet(walletDto.getUserName());
+        logger.debug("Create wallet to user {}, with correlation-id: {}", walletDto.getUserName(), ClientContextHolder.getContext().getCorrelationId());
         String message = "Wallet successfully created";
         return ResponseEntity.ok(new Response(message));
     }
 
     @GetMapping("/get/wallet-id/{walletId}")
     public ResponseEntity<Wallet> getWalletByWalletId(@PathVariable("walletId") Long walletId) throws WalletNotFoundException {
-        logger.debug("Get wallet by wallet-id with correlation-id: {}",  ClientContextHolder.getContext().getCorrelationId());
+        logger.debug("Get wallet by wallet-id {}, with correlation-id: {}",  walletId, ClientContextHolder.getContext().getCorrelationId());
         return ResponseEntity.ok(walletService.getWalletById(walletId));
     }
 
-    @GetMapping("/get/user-id/{userId}")
-    public ResponseEntity<Wallet> getWalletByUserId(@PathVariable("userId") Long userId) throws WalletNotFoundException {
-        logger.debug("Get wallet by user-id with correlation-id: {}",  ClientContextHolder.getContext().getCorrelationId());
-        return ResponseEntity.ok(walletService.getWalledByUserId(userId));
+    @GetMapping("/get/user-name/{userName}")
+    public ResponseEntity<Wallet> getWalletByUserName(@PathVariable("userName") String userName) throws WalletNotFoundException {
+        logger.debug("Get wallet by user-name {}, with correlation-id: {}",  userName, ClientContextHolder.getContext().getCorrelationId());
+        return ResponseEntity.ok(walletService.getWalledByUserName(userName));
     }
 
     @PutMapping("/deposit/wallet-id/{walletId}")
@@ -55,11 +56,11 @@ public class WalletController {
         return ResponseEntity.ok(new WalletManipulationResponse(message, wallet));
     }
 
-    @PutMapping("/deposit/user-id/{userId}")
-    public ResponseEntity<WalletManipulationResponse> depositValueToWalletByUserId(@PathVariable("userId") Long userId,
+    @PutMapping("/deposit/user-name/{userName}")
+    public ResponseEntity<WalletManipulationResponse> depositValueToWalletByUserId(@PathVariable("userName") String userName,
                                                                                    @RequestParam("value") Double value) throws WalletNotFoundException {
-        Wallet wallet = walletService.depositToWalletByUserId(userId, value);
-        logger.debug("Deposit to wallet by user-id with correlation-id: {}, and value: {}", ClientContextHolder.getContext().getCorrelationId(), value);
+        Wallet wallet = walletService.depositToWalletByUserName(userName, value);
+        logger.debug("Deposit to wallet by user-name {}, with correlation-id: {}, and value: {}", userName, ClientContextHolder.getContext().getCorrelationId(), value);
         String message = "Wallet successful replenished";
         return ResponseEntity.ok(new WalletManipulationResponse(message, wallet));
     }
@@ -68,16 +69,16 @@ public class WalletController {
     public ResponseEntity<WalletManipulationResponse> debitedValueFromWalletByWalletId(@PathVariable("walletId") Long walletId,
                                                                                        @RequestParam("debited-value") Double value) throws WalletNotFoundException, NotEnoughValueException {
         Wallet wallet = walletService.payFromWalletByWalletId(walletId, value);
-        logger.debug("Debited from wallet by wallet-id with correlation-id: {}, and value: {}",  ClientContextHolder.getContext().getCorrelationId(), value);
+        logger.debug("Debited from wallet by wallet-id {}, with correlation-id: {}, and value: {}",  walletId, ClientContextHolder.getContext().getCorrelationId(), value);
         String message = "Value successful debited from wallet";
         return ResponseEntity.ok(new WalletManipulationResponse(message, wallet));
     }
 
-    @PutMapping("/debited/user-id/{userId}")
-    public ResponseEntity<WalletManipulationResponse> debitedValueFromWalletByUserId(@PathVariable("userId") Long userId,
+    @PutMapping("/debited/user-name/{userName}")
+    public ResponseEntity<WalletManipulationResponse> debitedValueFromWalletByUserId(@PathVariable("userName") String userName,
                                                                                        @RequestParam("debited-value") Double value) throws WalletNotFoundException, NotEnoughValueException {
-        Wallet wallet = walletService.payFromWalletByUserId(userId, value);
-        logger.debug("Debited from wallet by user-id with correlation-id: {}, and value: {}",  ClientContextHolder.getContext().getCorrelationId(), value);
+        Wallet wallet = walletService.payFromWalletByUserName(userName, value);
+        logger.debug("Debited from wallet by user-name {}, with correlation-id: {}, and value: {}",  userName, ClientContextHolder.getContext().getCorrelationId(), value);
         String message = "Value successful debited from wallet";
         return ResponseEntity.ok(new WalletManipulationResponse(message, wallet));
     }

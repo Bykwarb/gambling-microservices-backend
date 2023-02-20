@@ -1,9 +1,6 @@
 package com.example.walletservice.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,13 +15,12 @@ public class Wallet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long walletId;
-    private Long userId;
+    @Column(unique = true)
+    private String userName;
     private Double value;
-
     public Wallet(){}
-
-    public Wallet(Long userId){
-        this.userId = userId;
+    public Wallet(String userName){
+        this.userName = userName;
         this.value = 0.0;
     }
 }

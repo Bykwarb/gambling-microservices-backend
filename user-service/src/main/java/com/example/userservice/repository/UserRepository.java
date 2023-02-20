@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository("UserRepo")
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    UserEntity getUserEntityByName(String username);
+    Optional<UserEntity> getUserEntityByName(String username);
 }

@@ -2,7 +2,9 @@ package com.example.client;
 
 import com.example.client.dto.LoginDto;
 import com.example.client.dto.UserDto;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,10 +38,11 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public String login(HttpServletRequest request, LoginDto loginDto){
+    public String login(HttpServletRequest request, HttpServletResponse response, LoginDto loginDto){
         String url = host +"/v1/auth-service/auth?email=" + loginDto.getEmail() + "&password=" + loginDto.getPassword();
         String token = restTemplate.getForObject(url, String.class);
         request.getSession().setAttribute("token", token);
+        response.addCookie(new Cookie("token", token));
         return "redirect:main";
     }
 

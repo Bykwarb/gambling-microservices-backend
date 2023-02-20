@@ -29,7 +29,7 @@ public class JwtTokenProvider {
     }
     private final static String key = Base64.getEncoder().encodeToString(SecurityConstant.SECRET_KEY.getBytes());
 
-    public boolean validateToken(String token) throws JwtAuthenticationException, JwtException, IllegalArgumentException {
+    public boolean validateToken(String token) throws JwtException, IllegalArgumentException {
         try {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(key).parseClaimsJws(token);
             String key = claimsJws.getBody().get("key", String.class);
@@ -37,7 +37,8 @@ public class JwtTokenProvider {
                 return false;
             }
             return !claimsJws.getBody().getExpiration().before(new Date());
-        }catch (SignatureException e){
+        }catch (Exception e){
+            log.debug("Provider");
             return false;
         }
     }
@@ -57,7 +58,7 @@ public class JwtTokenProvider {
         return claims;
     }
 
-    @ExceptionHandler(SignatureException.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<String> jwtExpHandler(){
         return ResponseEntity.ok("Invalid jwt token signature");
     }

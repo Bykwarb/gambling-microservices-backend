@@ -21,6 +21,7 @@ public class Result {
         Win,
         Lose,
         NotEnoughMoney,
-        IncorrectLinesNumber
+        IncorrectLinesNumber,
+        ServiceUnavailable
     }
 }

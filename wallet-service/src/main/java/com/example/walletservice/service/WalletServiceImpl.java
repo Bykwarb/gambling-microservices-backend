@@ -22,8 +22,8 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public void createWallet(Long userId) {
-        Wallet wallet = new Wallet(userId);
+    public void createWallet(String userName) {
+        Wallet wallet = new Wallet(userName);
         walletRepository.save(wallet);
     }
 
@@ -38,20 +38,20 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet getWalledByUserId(Long userId) throws WalletNotFoundException {
-        Wallet wallet = walletRepository.getWalletByUserId(userId);
+    public Wallet getWalledByUserName(String userName) throws WalletNotFoundException {
+        Wallet wallet = walletRepository.getWalletByUserName(userName);
         if (Objects.isNull(wallet)) {
-            logger.debug("Wallet not found. User-id: {}. Correlation-id: {}", userId,  ClientContextHolder.getContext().getCorrelationId());
+            logger.debug("Wallet not found. User-id: {}. Correlation-id: {}", userName,  ClientContextHolder.getContext().getCorrelationId());
             throw new WalletNotFoundException("Wallet not founded");
         }
         return wallet;
     }
 
     @Override
-    public Wallet depositToWalletByUserId(Long userId, Double value) throws WalletNotFoundException {
-        Wallet wallet = walletRepository.getWalletByUserId(userId);
+    public Wallet depositToWalletByUserName(String userName, Double value) throws WalletNotFoundException {
+        Wallet wallet = walletRepository.getWalletByUserName(userName);
         if (Objects.isNull(wallet)) {
-            logger.debug("Wallet not found. User-id: {}. Correlation-id: {}", userId,  ClientContextHolder.getContext().getCorrelationId());
+            logger.debug("Wallet not found. User-id: {}. Correlation-id: {}", userName,  ClientContextHolder.getContext().getCorrelationId());
             throw new WalletNotFoundException("Wallet not founded");
         }
         wallet.setValue(wallet.getValue() + value);
@@ -74,13 +74,13 @@ public class WalletServiceImpl implements WalletService {
 
 
     @Override
-    public Wallet payFromWalletByUserId(Long userId, Double value) throws WalletNotFoundException, NotEnoughValueException {
-        Wallet wallet = walletRepository.getWalletByUserId(userId);
+    public Wallet payFromWalletByUserName(String userName, Double value) throws WalletNotFoundException, NotEnoughValueException {
+        Wallet wallet = walletRepository.getWalletByUserName(userName);
         if (Objects.isNull(wallet)) {
             throw new WalletNotFoundException("Wallet not founded");
         }
         if (value > wallet.getValue()) {
-            logger.debug("Not enough money to complete transaction. User-id: {}. Value: {}. Correlation-id: {}", userId, value,  ClientContextHolder.getContext().getCorrelationId());
+            logger.debug("Not enough money to complete transaction. User-id: {}. Value: {}. Correlation-id: {}", userName, value,  ClientContextHolder.getContext().getCorrelationId());
             throw new NotEnoughValueException("Insufficient funds to complete the transaction");
         }
         wallet.setValue(wallet.getValue() - value);
