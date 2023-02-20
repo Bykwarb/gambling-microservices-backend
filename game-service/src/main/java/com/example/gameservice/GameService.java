@@ -30,10 +30,10 @@ public class GameService {
     public Result checkYourLuck(Session session){
         Response response = debitedFromWallet(session);
         if (response.getMessage().equals("There are not enough funds on the wallet to complete the transaction")){
-            return notEnoughMoney();
+            return errorHandle(Result.Status.NotEnoughMoney);
         }
         if (session.getLines() > 5 || session.getLines() < 1){
-            return incorrectLines();
+            return errorHandle(Result.Status.IncorrectLinesNumber);
         }
         result = slotMachine.play(session);
         if (result.getStatus() == Result.Status.Win){
@@ -42,22 +42,10 @@ public class GameService {
         }
         return result;
     }
-    private Result notEnoughMoney(){
+    private Result errorHandle(Result.Status status){
         result = new Result();
-        result.setStatus(Result.Status.NotEnoughMoney);
-        logger.debug("Not enough money. Correlation-id: {}.", ClientContextHolder.getContext().getCorrelationId());
-        return result;
-    }
-    private Result incorrectLines(){
-        result = new Result();
-        result.setStatus(Result.Status.IncorrectLinesNumber);
-        logger.debug("Incorrect lines number. Correlation-id: {}.", ClientContextHolder.getContext().getCorrelationId());
-        return result;
-    }
-    private Result serviceUnavailable(){
-        result = new Result();
-        result.setStatus(Result.Status.ServiceUnavailable);
-        logger.debug("Wallet service unavailable. Correlation-id: {}.", ClientContextHolder.getContext().getCorrelationId());
+        result.setStatus(status);
+        logger.debug("{}. Correlation-id: {}.", status, ClientContextHolder.getContext().getCorrelationId());
         return result;
     }
 
