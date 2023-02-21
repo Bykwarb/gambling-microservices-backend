@@ -46,9 +46,51 @@ export default class Slot {
 
   async spin() {
     this.currentSymbols = this.nextSymbols;
-    if (document.cookie.indexOf('token=') == -1){
-      document.location.href='http://localhost:1488/login'
+    if (!document.cookie.includes("token")) {
+      // создаем всплывающее окно
+      let popup = document.createElement("div");
+      popup.className = "popup";
+      popup.innerHTML = `<p>Please login</p>
+    <button id="loginBtn">Login</button>`;
+
+      // стилизуем всплывающее окно с помощью CSS
+      popup.style.position = "fixed";
+      popup.style.top = "50%";
+      popup.style.left = "50%";
+      popup.style.transform = "translate(-50%, -50%)";
+      popup.style.backgroundColor = "#ffffff";
+      popup.style.padding = "30px";
+      popup.style.border = "2px solid #007bff";
+      popup.style.borderRadius = "10px";
+      popup.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+      popup.style.textAlign = "center";
+      popup.style.width = "400px";
+
+      // стилизуем заголовок
+      let title = popup.querySelector("p");
+      title.style.fontSize = "24px";
+      title.style.fontWeight = "bold";
+      title.style.marginTop = "0";
+
+      // стилизуем кнопку логина
+      let loginBtn = popup.querySelector("#loginBtn");
+      loginBtn.style.backgroundColor = "#007bff";
+      loginBtn.style.color = "#ffffff";
+      loginBtn.style.border = "none";
+      loginBtn.style.padding = "10px 20px";
+      loginBtn.style.borderRadius = "5px";
+      loginBtn.style.cursor = "pointer";
+      loginBtn.style.marginTop = "20px";
+
+      // добавляем всплывающее окно на страницу
+      document.body.appendChild(popup);
+
+      // добавляем обработчик события на кнопку перенаправления на страницу логина
+      loginBtn.addEventListener("click", function () {
+        window.location.href = "/login"; // здесь нужно указать адрес страницы логина
+      });
     }
+
     const response = await this.parseApi(token);
     this.nextSymbols = response.symbols[0].map((_, colIndex) => response.symbols.map(row => row[colIndex]));
     this.onSpinStart(this.nextSymbols);
@@ -103,7 +145,28 @@ export default class Slot {
       popup.id = "popup";
       popup.innerHTML = "Service unavailable. Try again in a few minutes";
       document.body.appendChild(popup);
-      popup.addEventListener("click", function() {
+
+// стилизуем всплывающее окно с помощью CSS
+      popup.style.position = "fixed";
+      popup.style.top = "50%";
+      popup.style.left = "50%";
+      popup.style.transform = "translate(-50%, -50%)";
+      popup.style.backgroundColor = "#ffffff";
+      popup.style.padding = "30px";
+      popup.style.border = "2px solid #dc3545";
+      popup.style.borderRadius = "10px";
+      popup.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.5)";
+      popup.style.textAlign = "center";
+      popup.style.width = "400px";
+
+// стилизуем текст сообщения
+      popup.style.fontSize = "24px";
+      popup.style.color = "#dc3545";
+      popup.style.fontWeight = "bold";
+      popup.style.marginTop = "0";
+
+// добавляем обработчик события на клик по окну
+      popup.addEventListener("click", function () {
         popup.parentNode.removeChild(popup);
       });
     });
