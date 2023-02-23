@@ -11,10 +11,16 @@ import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("v1/wallet/")
@@ -22,7 +28,8 @@ public class WalletController {
 
     private Logger logger = LoggerFactory.getLogger(WalletController.class);
     private final WalletService walletService;
-
+    @Autowired
+    private LoadBalancerClient loadBalancerClient;
     public WalletController(WalletService walletService) {
         this.walletService = walletService;
     }
@@ -83,8 +90,6 @@ public class WalletController {
         String message = "Value successful debited from wallet";
         return ResponseEntity.ok(new WalletManipulationResponse(message, wallet));
     }
-
-
     @ExceptionHandler(value = {WalletNotFoundException.class})
     protected ResponseEntity<Response> notFoundExceptionHandler(){
         String bodyOfResponse = "Wallet not found";

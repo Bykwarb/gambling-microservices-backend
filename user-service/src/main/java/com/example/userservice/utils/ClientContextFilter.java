@@ -24,9 +24,11 @@ public class ClientContextFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         String token = httpServletRequest.getHeader(ClientContext.AUTH_TOKEN);
+        if (token != null){
+            ClientContextHolder.getContext().setAuthToken(token);
+            ClientContextHolder.getContext().setUserName(jwtTokenProvider.getUsername(token));
+        }
         ClientContextHolder.getContext().setCorrelationId(httpServletRequest.getHeader(ClientContext.CORRELATION_ID));
-        ClientContextHolder.getContext().setAuthToken(token);
-        ClientContextHolder.getContext().setUserName(jwtTokenProvider.getUsername(token));
         filterChain.doFilter(httpServletRequest, servletResponse);
      }
 

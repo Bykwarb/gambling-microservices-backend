@@ -23,7 +23,8 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class AuthenticationController {
 
-    RestTemplate restTemplate = new RestTemplate();
+
+    private RestTemplate restTemplate;
     @Value("${api.host}")
     private String host;
     @GetMapping("/main")
@@ -40,6 +41,7 @@ public class AuthenticationController {
     @PostMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response, LoginDto loginDto){
         String url = host +"/v1/auth-service/auth?email=" + loginDto.getEmail() + "&password=" + loginDto.getPassword();
+        restTemplate = new RestTemplate();
         String token = restTemplate.getForObject(url, String.class);
         request.getSession().setAttribute("token", token);
         response.addCookie(new Cookie("token", token));
@@ -49,6 +51,7 @@ public class AuthenticationController {
     @PostMapping(value = "/registration")
     public String registration(@ModelAttribute UserDto userDto, Model model){
         String url = host +"/v1/user-service/create";
+        restTemplate = new RestTemplate();
         ResponseEntity<Response> response = restTemplate.postForEntity(url, userDto, Response.class);
         if (response.getBody().getMessage().equals("User already exist")){
             return "redirect:login?exist";

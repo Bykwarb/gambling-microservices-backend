@@ -7,6 +7,7 @@ import com.example.walletservice.exception.WalletNotFoundException;
 import com.example.walletservice.repo.WalletRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -16,9 +17,10 @@ import java.util.Optional;
 public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
     private final Logger logger = LoggerFactory.getLogger(WalletServiceImpl.class);
-
-    public WalletServiceImpl(WalletRepository walletRepository) {
+    private final SimpMessagingTemplate messagingTemplate;
+    public WalletServiceImpl(WalletRepository walletRepository, SimpMessagingTemplate messagingTemplate) {
         this.walletRepository = walletRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @Override
@@ -56,6 +58,8 @@ public class WalletServiceImpl implements WalletService {
         }
         wallet.setValue(wallet.getValue() + value);
         walletRepository.save(wallet);
+        logger.debug("UserName: {}, value: {}", userName, wallet.getValue());
+        messagingTemplate.convertAndSendToUser(userName, "/balance", wallet.getValue());
         return wallet;
     }
 
@@ -85,6 +89,8 @@ public class WalletServiceImpl implements WalletService {
         }
         wallet.setValue(wallet.getValue() - value);
         walletRepository.save(wallet);
+        logger.debug("UserName: {}, value: {}", userName, wallet.getValue());
+        messagingTemplate.convertAndSendToUser(userName, "/balance", wallet.getValue());
         return wallet;
     }
 
