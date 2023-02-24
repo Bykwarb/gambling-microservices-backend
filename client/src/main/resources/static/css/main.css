@@ -188,5 +188,6 @@ body {
 }
 
 .highlighted {
-  border-bottom: 3px solid red;
+  border: 3px solid red;
+  box-sizing: border-box;
 }

@@ -3,13 +3,12 @@ const cache = {};
 export default class Symbol {
   constructor(name = Symbol.random()) {
     this.name = name;
-
     if (cache[name]) {
       this.img = cache[name].cloneNode();
     } else {
       this.img = new Image();
-      this.img.src = `../images/assets/${name}.svg`
-
+      this.img.src = `../images/assets/${name}.svg`;
+      this.img.className='symbol';
       cache[name] = this.img;
     }
   }
