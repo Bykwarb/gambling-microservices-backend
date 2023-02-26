@@ -14,13 +14,12 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-public class GameHistoryListener implements ApplicationListener<SendGameToGameHistoryEvent> {
+public class GameEventListener implements ApplicationListener<GameEvent> {
     @Autowired
     private KafkaTemplate<String, GameDTO> kafkaTemplate;
-    private String topicName = "game-message";
-    private Logger logger = LoggerFactory.getLogger(GameHistoryListener.class);
+    private Logger logger = LoggerFactory.getLogger(GameEventListener.class);
     @Override
-    public void onApplicationEvent(SendGameToGameHistoryEvent event) {
+    public void onApplicationEvent(GameEvent event) {
         GameDTO gameDTO = new GameDTO();
         Result result = event.getResult();
         Session session = event.getSession();
@@ -32,6 +31,6 @@ public class GameHistoryListener implements ApplicationListener<SendGameToGameHi
         gameDTO.setLocalDateTime(LocalDateTime.now());
         logger.debug("Time: {}", gameDTO.getLocalDateTime());
         logger.debug("Sending message to Kafka. GameDTO: {}. Correlation-id: {}", gameDTO, ClientContextHolder.getContext().getCorrelationId());
-        kafkaTemplate.send(topicName, ClientContextHolder.getContext().getCorrelationId(), gameDTO);
+        kafkaTemplate.send(event.getTopic(), ClientContextHolder.getContext().getCorrelationId(), gameDTO);
     }
 }

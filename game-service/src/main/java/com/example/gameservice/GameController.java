@@ -1,6 +1,6 @@
 package com.example.gameservice;
 
-import com.example.gameservice.events.SendGameToGameHistoryEvent;
+import com.example.gameservice.events.GameEvent;
 import com.example.gameservice.game.entity.Result;
 import com.example.gameservice.game.entity.Session;
 import com.example.userservice.utils.ClientContextHolder;
@@ -18,7 +18,6 @@ public class GameController {
 
     private final GameService gameService;
     private Logger logger = LoggerFactory.getLogger(GameService.class);
-
     private final ApplicationEventPublisher publisher;
 
     public GameController(GameService gameService, ApplicationEventPublisher publisher) {
@@ -33,7 +32,7 @@ public class GameController {
         logger.debug("Play. Game-id {}. Session {}. Correlation-id: {}.", session.getGameId(), session, ClientContextHolder.getContext().getCorrelationId());
         Result result = gameService.checkYourLuck(session);
         logger.debug("Result. Game-id {}. Correlation-id: {}. Result: {}.", session.getGameId(), ClientContextHolder.getContext().getCorrelationId(), result);
-        publisher.publishEvent(new SendGameToGameHistoryEvent(result, session));
+        publisher.publishEvent(new GameEvent(result, session, "game-message"));
         return ResponseEntity.ok(result);
     }
 

@@ -24,7 +24,7 @@ public class UserKafkaHandler {
     private PasswordEncoder passwordEncoder;
     @KafkaListener(topics = "user-message")
     public void GameHistoryMessageReceive(@Payload UserDto userDto, @Header(KafkaHeaders.RECEIVED_KEY) String key){
-        log.debug("Received message from game-service. User: {}. Correlation-id: {}.", userDto, key);
+        log.debug("Received message from user-service. User: {}. Correlation-id: {}.", userDto, key);
         User user = new User();
         user.setEmail(userDto.getEmail());
         user.setUsername(userDto.getUsername());

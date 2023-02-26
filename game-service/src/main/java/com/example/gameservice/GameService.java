@@ -1,5 +1,6 @@
 package com.example.gameservice;
 
+import com.example.gameservice.events.GameEvent;
 import com.example.gameservice.game.entity.Result;
 import com.example.gameservice.game.entity.Session;
 import com.example.gameservice.game.SlotMachine;
@@ -10,12 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.UUID;
 
 @Service
 public class GameService {
@@ -25,6 +25,8 @@ public class GameService {
     private String walletUri;
     private RestTemplate restTemplate;
     private Result result;
+    @Autowired
+    private ApplicationEventPublisher publisher;
     private Logger logger = LoggerFactory.getLogger(GameService.class);
 
     public Result checkYourLuck(Session session){
@@ -40,8 +42,7 @@ public class GameService {
         }
         result = slotMachine.play(session);
         if (result.getStatus() == Result.Status.Win){
-            Response depositResponse = depositToWallet(session, result);
-            logger.debug(depositResponse.getMessage());
+            depositToWallet(session, result);
         }
         return result;
     }
@@ -52,10 +53,8 @@ public class GameService {
         return result;
     }
 
-    private Response depositToWallet(Session session, Result result){
-        restTemplate = new RestTemplate();
-        String url = walletUri + "/deposit/user-name/" + session.getBetterUserName() + "?value=" + result.getResult();
-        return getResponse(url);
+    private void depositToWallet(Session session, Result result){
+        publisher.publishEvent(new GameEvent(result, session,"wallet-message"));
     }
 
     private Response debitedFromWallet(Session session){

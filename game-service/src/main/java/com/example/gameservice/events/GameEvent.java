@@ -8,13 +8,15 @@ import org.springframework.context.ApplicationEvent;
 
 @Getter
 @Setter
-public class SendGameToGameHistoryEvent extends ApplicationEvent {
+public class GameEvent extends ApplicationEvent {
     private Result result;
     private Session session;
-    public SendGameToGameHistoryEvent(Result result, Session session) {
+    private String topic;
+    public GameEvent(Result result, Session session, String topic) {
         super(result);
         this.result = result;
         this.session = session;
+        this.topic = topic;
     }
 
 

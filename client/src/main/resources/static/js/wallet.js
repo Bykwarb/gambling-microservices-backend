@@ -1,9 +1,11 @@
-
 const token = document.cookie
     .split('; ')
     .find((row) => row.startsWith('token='))
     ?.split('=')[1];
-const balanceEl = document.getElementById('balance');
+const uBalance = document.getElementById('ubalance');
+const cBalance = document.getElementById('cbalance');
+const depositForm = document.querySelector('.deposit-form');
+const withdrawForm = document.querySelector('.withdraw-form');
 fetch(`http://localhost:8072/v1/wallet/get/user-name/`, {
     method: 'GET',
     headers: {
@@ -17,13 +19,14 @@ fetch(`http://localhost:8072/v1/wallet/get/user-name/`, {
         return response.json();
     })
     .then(function(data) {
-        balanceEl.innerText = 'Balance: ' + data.value;
+        uBalance.innerText = data.value + ' BBC';
+        cBalance.innerText = data.value + ' BBC';
     })
     .catch(function(error) {
         console.error(error);
-        balanceEl.innerText = 'Balance: 0';
+        uBalance.innerText = '0';
+        cBalance.innerText = '0';
     });
-
 
 var socket = new SockJS('http://localhost:7218/ws');
 var stompClient = Stomp.over(socket);
@@ -31,6 +34,43 @@ stompClient.connect({}, function(frame) {
     console.log("onConnect");
     stompClient.subscribe('/user/Bykwarb/balance', message =>{
         var balance = JSON.parse(message.body);
-        balanceEl.innerText = 'Balance: ' + balance;
+        uBalance.innerText = balance + ' BBC';
+        cBalance.innerText = balance + ' BBC';
     });
 });
+function handleSubmit(event, formType) {
+    event.preventDefault();
+
+    const value = formType === 'deposit' ? document.getElementById('deposit-amount').value : document.getElementById('withdraw-amount').value;
+    if (formType === 'deposit'){
+        fetch('http://localhost:8072/v1/wallet/deposit/user-name/Bykwarb?value=' + document.getElementById('deposit-amount').value, {
+            method: 'PUT',
+            headers: {
+                'Authorization': token,
+            },
+        })
+            .then(response => {
+                // handle response
+            })
+            .catch(error => {
+                // handle error
+            });
+    }else if (formType === 'withdraw'){
+        fetch('http://localhost:8072/v1/wallet/debited/user-name/Bykwarb?debited-value=' + document.getElementById('withdraw-amount').value, {
+            method: 'PUT',
+            headers: {
+                'Authorization': token,
+            },
+        })
+            .then(response => {
+                // handle response
+            })
+            .catch(error => {
+                // handle error
+            });
+    }
+
+}
+
+depositForm.addEventListener('submit', event => handleSubmit(event, 'deposit'));
+withdrawForm.addEventListener('submit', event => handleSubmit(event, 'withdraw'));

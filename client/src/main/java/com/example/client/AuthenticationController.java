@@ -27,10 +27,7 @@ public class AuthenticationController {
     private RestTemplate restTemplate;
     @Value("${api.host}")
     private String host;
-    @GetMapping("/main")
-    public String getMainPage(){
-        return "main";
-    }
+
     @GetMapping("/login")
     public String getLoginPage(Model model){
         model.addAttribute("userDto", new UserDto());

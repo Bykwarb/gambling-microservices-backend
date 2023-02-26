@@ -58,7 +58,6 @@ public class WalletServiceImpl implements WalletService {
         }
         wallet.setValue(wallet.getValue() + value);
         walletRepository.save(wallet);
-        logger.debug("UserName: {}, value: {}", userName, wallet.getValue());
         messagingTemplate.convertAndSendToUser(userName, "/balance", wallet.getValue());
         return wallet;
     }
@@ -89,7 +88,6 @@ public class WalletServiceImpl implements WalletService {
         }
         wallet.setValue(wallet.getValue() - value);
         walletRepository.save(wallet);
-        logger.debug("UserName: {}, value: {}", userName, wallet.getValue());
         messagingTemplate.convertAndSendToUser(userName, "/balance", wallet.getValue());
         return wallet;
     }
