@@ -3,16 +3,17 @@ This is the backend for a gambling web application that has been split up into m
 
 ## Installation
 
-1. Clone the repository:
+**1. Clone the repository:**
 
 ```git clone https://github.com/Bykwarb/gambling-microservices-backend.git```
 
-2. Install dependencies:
+**2. Install dependencies:**
 
 ```npm install```
-Create a .env file in the root directory of the project and fill in the required variables according to the .env.example file.
 
-Start the application:
+*Create a .env file in the root directory of the project and fill in the required variables according to the .env.example file.*
+
+**3. Start the application:**
 
 ```npm start```
 
