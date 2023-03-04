@@ -9,25 +9,20 @@ import java.util.Map;
 @Component
 public class Paymaster {
 
-    public Result calculateResult(Map<Lines, Symbols> r, Session session){
+    public Result calculateResult(Map<Lines, Symbols> resultMap, Session session) {
         Result result = new Result();
-        double sum = 0;
-        if (!r.isEmpty()){
-            for (Map.Entry<Lines, Symbols> entry : r.entrySet()) {
-                Lines k = entry.getKey();
-                Symbols v = entry.getValue();
-                if (k.getIndexNumber() <= session.getLines()){
-                    sum += ((session.getBetValue() + v.getCoefficient()) * k.getCoefficient());
+        double resultValue = 0;
+        if (!resultMap.keySet().isEmpty()) {
+            for (Map.Entry<Lines, Symbols> entry : resultMap.entrySet()) {
+                Lines line = entry.getKey();
+                Symbols symbol = entry.getValue();
+                if (line.getIndexNumber() <= session.getLines()) {
+                    resultValue += ((session.getBetValue() + symbol.getCoefficient()) * line.getCoefficient());
                 }
             }
         }
-        if (sum != 0){
-            result.setResult(sum);
-            result.setStatus(Result.Status.Win);
-        }else {
-            result.setResult(sum);
-            result.setStatus(Result.Status.Lose);
-        }
+        result.setResult(resultValue);
+        result.setStatus(resultValue != 0 ? Result.Status.Win : Result.Status.Lose);
         return result;
     }
 }

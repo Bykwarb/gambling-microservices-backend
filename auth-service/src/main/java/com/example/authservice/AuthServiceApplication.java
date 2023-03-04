@@ -16,4 +16,6 @@ public class AuthServiceApplication {
     PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
+
 }

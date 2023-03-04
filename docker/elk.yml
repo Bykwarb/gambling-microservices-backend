@@ -1,0 +1,51 @@
+version: '3.7'
+services:
+  Elasticsearch:
+    image: elasticsearch:7.9.2
+    container_name: elasticserch
+    environment:
+      discovery.type: single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    networks:
+      - elk
+
+  Logstash:
+    image: logstash:7.9.2
+    container_name: logstash
+    volumes:
+      - type: bind
+        source: ./config/
+        target: /usr/share/logstash/pipeline
+    depends_on:
+      - Elasticsearch
+    ports:
+      - '9600:9600'
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    networks:
+      - elk
+
+  Kibana:
+    image: kibana:7.9.2
+    container_name: kibana
+    ports:
+      - '5601:5601'
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    depends_on:
+      - Elasticsearch
+    networks:
+      - elk
+
+volumes:
+  elastic_data:
+    driver: local
+
+networks:
+  elk:

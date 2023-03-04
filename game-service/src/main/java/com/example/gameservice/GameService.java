@@ -6,9 +6,8 @@ import com.example.gameservice.game.entity.Session;
 import com.example.gameservice.game.SlotMachine;
 import com.example.gameservice.utils.Response;
 import com.example.userservice.utils.ClientContextHolder;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -18,6 +17,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@Slf4j
 public class GameService {
     @Autowired
     private SlotMachine slotMachine;
@@ -27,18 +27,18 @@ public class GameService {
     private Result result;
     @Autowired
     private ApplicationEventPublisher publisher;
-    private Logger logger = LoggerFactory.getLogger(GameService.class);
+
 
     public Result checkYourLuck(Session session){
         Response response = debitedFromWallet(session);
         if (response == null){
-            return errorHandle(Result.Status.ServiceUnavailable);
+            return handleError(Result.Status.ServiceUnavailable);
         }
         if (response.getMessage().equals("There are not enough funds on the wallet to complete the transaction")){
-            return errorHandle(Result.Status.NotEnoughMoney);
+            return handleError(Result.Status.NotEnoughMoney);
         }
         if (session.getLines() > 5 || session.getLines() < 1){
-            return errorHandle(Result.Status.IncorrectLinesNumber);
+            return handleError(Result.Status.IncorrectLinesNumber);
         }
         result = slotMachine.play(session);
         if (result.getStatus() == Result.Status.Win){
@@ -46,10 +46,10 @@ public class GameService {
         }
         return result;
     }
-    private Result errorHandle(Result.Status status){
+    private Result handleError(Result.Status status){
         result = new Result();
         result.setStatus(status);
-        logger.debug("{}. Correlation-id: {}.", status, ClientContextHolder.getContext().getCorrelationId());
+        log.debug("{}. Correlation-id: {}.", status, ClientContextHolder.getContext().getCorrelationId());
         return result;
     }
 
@@ -63,15 +63,15 @@ public class GameService {
         return getResponse(url);
     }
 
-    @Nullable
     private Response getResponse(String url) {
-        ResponseEntity<Response> walletResponse;
+        HttpEntity<String> entity = getEntity();
         try {
-            walletResponse = restTemplate.exchange(url, HttpMethod.PUT, getEntity(), Response.class);
-        }catch (HttpServerErrorException ex){
+            ResponseEntity<Response> walletResponse = restTemplate.exchange(url, HttpMethod.PUT, entity, Response.class);
+            return walletResponse.getBody();
+        } catch (HttpServerErrorException ex) {
+            log.error("Failed to call wallet service: {}", ex.getMessage());
             return null;
         }
-        return walletResponse.getBody();
     }
     private HttpEntity<String> getEntity(){
         HttpHeaders httpHeaders = new HttpHeaders();

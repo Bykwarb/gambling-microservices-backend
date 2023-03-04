@@ -8,34 +8,38 @@ import com.example.userservice.utils.ClientContextHolder;
 import com.example.userservice.entities.UserDTO;
 import com.example.userservice.entities.UserEntity;
 import com.example.userservice.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service("UserService")
+@Slf4j
 public class UserServiceImpl implements UserService{
-    private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
+    private final UserRepository userRepository;
+
+    private final ApplicationEventPublisher publisher;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ApplicationEventPublisher publisher;
+    public UserServiceImpl(UserRepository userRepository, ApplicationEventPublisher publisher) {
+        this.userRepository = userRepository;
+        this.publisher = publisher;
+    }
+
+
     @Override
     public void createUser(UserDTO userDTO) throws UserAlreadyExistException {
-        try {
-            UserEntity user = new UserEntity();
-            user.setName(userDTO.getUsername());
-            userRepository.save(user);
-        }catch (Exception e){
-            throw new UserAlreadyExistException("User already exist");
+        if (userRepository.existsByName(userDTO.getUsername())) {
+            throw new UserAlreadyExistException("User already exists");
         }
-        logger.debug("Publish event, userDto {}", userDTO);
+        UserEntity user = new UserEntity();
+        user.setName(userDTO.getUsername());
+        userRepository.save(user);
         publisher.publishEvent(new SendUserToAuthServiceEvent(userDTO));
-        logger.debug("Publish event, userName {}", userDTO);
         publisher.publishEvent(new SendRequestToCreateWalletEvent(userDTO.getUsername()));
     }
 
@@ -46,17 +50,15 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserEntity getUserByUserName(String username) {
-        return userRepository.getUserEntityByName(username).get();
+        return userRepository.getUserEntityByName(username).orElse(null);
     }
 
     @Override
     public UserEntity getUserById(Long id) throws UserNotFoundedException {
-        Optional<UserEntity> optionalUser = userRepository.findById(id);
-        if(optionalUser.isEmpty()){
-            logger.debug("User not found. Correlation-id: {}. User id: {}", ClientContextHolder.getContext().getCorrelationId(), id);
-            throw new UserNotFoundedException("User not found");
-        }
-        return optionalUser.get();
+        return userRepository.findById(id).orElseThrow(() -> {
+            log.debug("User not found. Correlation-id: {}. User id: {}", ClientContextHolder.getContext().getCorrelationId(), id);
+            return new UserNotFoundedException("User not found");
+        });
     }
 
 

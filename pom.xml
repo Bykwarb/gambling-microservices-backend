@@ -11,11 +11,106 @@
     <modules>
         <module>auth-service</module>
     </modules>
-
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
+    <build>
+        <plugins>
+            <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <executions>
+            <execution>
+                <id>config-server</id>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+                <configuration>
+                    <mainClass>com.example.configserver.ConfigServerApplication</mainClass>
+                </configuration>
+            </execution>
+            <execution>
+                <id>eureka-server</id>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+                <configuration>
+                    <mainClass>com.example.eurekaserver.EurekaServerApplication</mainClass>
+                    <arguments>
+                        <argument>--spring.config.name=eureka-server</argument>
+                    </arguments>
+                </configuration>
+                <phase>pre-integration-test</phase>
+            </execution>
+            <execution>
+                <id>api-gateway</id>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+                <configuration>
+                    <mainClass>com.example.apigateway.ApiGatewayApplication</mainClass>
+                    <arguments>
+                        <argument>--spring.config.name=api-gateway</argument>
+                    </arguments>
+                </configuration>
+                <phase>pre-integration-test</phase>
+            </execution>
+                <execution>
+                    <id>auth-service</id>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                    <configuration>
+                        <mainClass>com.example.authservice.AuthServiceApplication</mainClass>
+                        <arguments>
+                            <argument>--spring.config.name=auth-service</argument>
+                        </arguments>
+                    </configuration>
+                    <phase>pre-integration-test</phase>
+                </execution>
+                <execution>
+                <id>user-service</id>
+                <goals>
+                    <goal>run</goal>
+                </goals>
+                <configuration>
+                    <mainClass>com.example.userservice.UserServiceApplication</mainClass>
+                    <arguments>
+                    <argument>--spring.config.name=user-service</argument>
+                    </arguments>
+                </configuration>
+                    <phase>pre-integration-test</phase>
+                </execution>
+                <execution>
+                        <id>wallet-service</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.example.walletservice.WalletServiceApplication</mainClass>
+                            <arguments>
+                                <argument>--spring.config.name=wallet-service</argument>
+                            </arguments>
+                        </configuration>
+                        <phase>pre-integration-test</phase>
+                    </execution>
+                    <execution>
+                        <id>game-service</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.example.gameservice.GameServiceApplication</mainClass>
+                            <arguments>
+                                <argument>--spring.config.name=game-service</argument>
+                            </arguments>
+                        </configuration>
+                        <phase>pre-integration-test</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

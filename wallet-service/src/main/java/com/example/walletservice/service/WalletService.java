@@ -8,8 +8,4 @@ public interface WalletService {
     void createWallet(String username);
     Wallet getWalletById(Long id) throws WalletNotFoundException;
     Wallet getWalledByUserName(String userName) throws WalletNotFoundException;
-    Wallet depositToWalletByUserName(String userName, Double value) throws WalletNotFoundException;
-    Wallet depositToWalletByWalletId(Long walletId, Double value) throws WalletNotFoundException;
-    Wallet payFromWalletByWalletId(Long wallet, Double value) throws NotEnoughValueException, WalletNotFoundException;
-    Wallet payFromWalletByUserName(String userName, Double value) throws WalletNotFoundException, NotEnoughValueException;
 }
