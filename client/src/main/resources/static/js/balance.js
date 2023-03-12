@@ -1,8 +1,12 @@
-
 const token = document.cookie
     .split('; ')
     .find((row) => row.startsWith('token='))
     ?.split('=')[1];
+const username =  document.cookie
+    .split('; ')
+    .find((row) => row.startsWith('username='))
+    ?.split('=')[1];
+
 const balanceEl = document.getElementById('balance');
 fetch(`http://localhost:8072/v1/wallet/get/user-name/`, {
     method: 'GET',
@@ -29,7 +33,7 @@ var socket = new SockJS('http://localhost:7218/ws');
 var stompClient = Stomp.over(socket);
 stompClient.connect({}, function(frame) {
     console.log("onConnect");
-    stompClient.subscribe('/user/Bykwarb/balance', message =>{
+    stompClient.subscribe('/user/'+ username +'/balance', message =>{
         var balance = JSON.parse(message.body);
         balanceEl.innerText = 'Balance: ' + balance;
     });

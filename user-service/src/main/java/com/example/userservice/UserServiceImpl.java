@@ -8,6 +8,7 @@ import com.example.userservice.utils.ClientContextHolder;
 import com.example.userservice.entities.UserDTO;
 import com.example.userservice.entities.UserEntity;
 import com.example.userservice.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service("UserService")
+@Transactional
 @Slf4j
 public class UserServiceImpl implements UserService{
 
@@ -49,8 +51,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserEntity getUserByUserName(String username) {
-        return userRepository.getUserEntityByName(username).orElse(null);
+    public UserEntity getUserByUserName(String username) throws UserNotFoundedException {
+        return userRepository.getUserEntityByName(username).orElseThrow(() -> {
+            log.debug("User not found. Correlation-id: {}. Username: {}", ClientContextHolder.getContext().getCorrelationId(), username);
+            return new UserNotFoundedException("User not found");
+        });
     }
 
     @Override

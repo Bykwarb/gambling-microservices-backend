@@ -1,4 +1,4 @@
-package com.example.client;
+package com.example.client.controllers;
 
 import com.example.client.dto.LoginDto;
 import com.example.client.dto.UserDto;
@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
+
 @Controller
 @Slf4j
 public class AuthenticationController {
-
-
     private RestTemplate restTemplate;
     @Value("${api.host}")
     private String host;
@@ -39,9 +39,11 @@ public class AuthenticationController {
     public String login(HttpServletRequest request, HttpServletResponse response, LoginDto loginDto){
         String url = host +"/v1/auth-service/auth?email=" + loginDto.getEmail() + "&password=" + loginDto.getPassword();
         restTemplate = new RestTemplate();
-        String token = restTemplate.getForObject(url, String.class);
-        request.getSession().setAttribute("token", token);
-        response.addCookie(new Cookie("token", token));
+        Map<String, String> authResponse = restTemplate.getForObject(url, Map.class);
+        request.getSession().setAttribute("token", authResponse.get("token"));
+        response.addCookie(new Cookie("username", authResponse.get("username")));
+        response.addCookie(new Cookie("email", authResponse.get("email")));
+        response.addCookie(new Cookie("token", authResponse.get("token")));
         return "redirect:main";
     }
 

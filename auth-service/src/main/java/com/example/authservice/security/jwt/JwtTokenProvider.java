@@ -29,6 +29,7 @@ public class JwtTokenProvider {
 
     public String createToken(User user){
         Claims claims = Jwts.claims().setSubject(user.getUsername());
+        claims.put("email", user.getEmail());
         claims.put("role", user.getRole());
         claims.put("key", passwordEncoder.encode(claimsKey));
         Date now = new Date();
@@ -42,14 +43,17 @@ public class JwtTokenProvider {
     }
 
     public UsernamePasswordAuthenticationToken getAuthentication(String token){
-        UserDetails details = userDetailsService.loadUserByUsername(getEmail(token));
+        UserDetails details = userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(details, "", details.getAuthorities());
     }
 
-    public String getEmail(String token){
+    public static String getUsername(String token){
         return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
     }
-
+    public static String getEmail(String token){
+        Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+        return (String) claims.get("email");
+    }
     public static Claims decodeJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(key)

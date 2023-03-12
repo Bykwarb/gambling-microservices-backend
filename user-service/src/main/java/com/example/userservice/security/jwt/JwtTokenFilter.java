@@ -40,11 +40,15 @@ public class JwtTokenFilter extends GenericFilterBean {
                         Role.valueOf(jwtTokenProvider.getClaims(token).get("role").toString()).getAuthorities());
                 if (authentication != null){
                     SecurityContextHolder.getContext().setAuthentication(authentication);
+                }else {
+                    ((HttpServletResponse) servletResponse).sendError(HttpStatus.FORBIDDEN.value());
+                    return;
                 }
             }
 
         }catch (Exception e){
             ((HttpServletResponse) servletResponse).sendError(HttpStatus.FORBIDDEN.value());
+            return;
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

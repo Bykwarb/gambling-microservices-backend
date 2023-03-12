@@ -13,6 +13,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService{
@@ -23,7 +26,7 @@ public class AuthServiceImpl implements AuthService{
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Override
-    public ResponseEntity<String> auth(String email, String password) {
+    public ResponseEntity<?> auth(String email, String password) {
         log.info("Auth user with credential: {}, {}", email, password);
         try {
             manager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
@@ -36,17 +39,12 @@ public class AuthServiceImpl implements AuthService{
         }
         User user = userService.getUserByEmail(email);
         String token = jwtTokenProvider.createToken(user);
-        return ResponseEntity.ok(token);
+        Map<String, String> response = new HashMap<>();
+        response.put("username", user.getUsername());
+        response.put("email", user.getEmail());
+        response.put("token", token);
+        return ResponseEntity.ok(response);
     }
 
 
-    @Override
-    public UsernamePasswordAuthenticationToken verify(String token) {
-        try {
-            return jwtTokenProvider.getAuthentication(token);
-        } catch (Exception e) {
-            log.error("Failed to verify token {}", token, e);
-            return null;
-        }
-    }
 }

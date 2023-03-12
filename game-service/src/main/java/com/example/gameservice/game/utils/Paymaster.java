@@ -17,9 +17,13 @@ public class Paymaster {
                 Lines line = entry.getKey();
                 Symbols symbol = entry.getValue();
                 if (line.getIndexNumber() <= session.getLines()) {
-                    resultValue += ((session.getBetValue() + symbol.getCoefficient()) * line.getCoefficient());
+                    resultValue += (session.getBetValue() * symbol.getCoefficient() * 15);
                 }
             }
+        }
+        // Decrease resultValue if lines > 1 for 20% per lines up to 80%
+        if (session.getLines() > 1 && session.getLines() <= 5) {
+            resultValue *= (6 - session.getLines()) / 5.0;
         }
         result.setResult(resultValue);
         result.setStatus(resultValue != 0 ? Result.Status.Win : Result.Status.Lose);

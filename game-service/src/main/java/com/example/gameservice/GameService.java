@@ -7,7 +7,6 @@ import com.example.gameservice.game.SlotMachine;
 import com.example.gameservice.utils.Response;
 import com.example.userservice.utils.ClientContextHolder;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -20,13 +19,18 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class GameService {
     @Autowired
-    private SlotMachine slotMachine;
+    private final SlotMachine slotMachine;
     @Value("${wallet.uri}")
     private String walletUri;
     private RestTemplate restTemplate;
     private Result result;
     @Autowired
-    private ApplicationEventPublisher publisher;
+    private final ApplicationEventPublisher publisher;
+
+    public GameService(SlotMachine slotMachine, ApplicationEventPublisher publisher) {
+        this.slotMachine = slotMachine;
+        this.publisher = publisher;
+    }
 
 
     public Result checkYourLuck(Session session){

@@ -24,8 +24,8 @@ public class JwtTokenProvider {
     @Value("${security.key}")
     private String claimsKey ;
     private final PasswordEncoder passwordEncoder;
-    public JwtTokenProvider(PasswordEncoder passwordEncoder1) {
-        this.passwordEncoder = passwordEncoder1;
+    public JwtTokenProvider(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
     private final static String key = Base64.getEncoder().encodeToString(SecurityConstant.SECRET_KEY.getBytes());
 
@@ -46,7 +46,6 @@ public class JwtTokenProvider {
     public String getUsername(String token){
         return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
     }
-
     public String resolveToken(HttpServletRequest request){
         return request.getHeader(SecurityConstant.JWT_HEADER);
     }

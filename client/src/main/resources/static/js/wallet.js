@@ -2,6 +2,10 @@ const token = document.cookie
     .split('; ')
     .find((row) => row.startsWith('token='))
     ?.split('=')[1];
+const username =  document.cookie
+    .split('; ')
+    .find((row) => row.startsWith('username='))
+    ?.split('=')[1];
 const uBalance = document.getElementById('ubalance');
 const cBalance = document.getElementById('cbalance');
 const depositForm = document.querySelector('.deposit-form');
@@ -32,7 +36,7 @@ var socket = new SockJS('http://localhost:7218/ws');
 var stompClient = Stomp.over(socket);
 stompClient.connect({}, function(frame) {
     console.log("onConnect");
-    stompClient.subscribe('/user/Bykwarb/balance', message =>{
+    stompClient.subscribe('/user/' + username +'/balance', message =>{
         var balance = JSON.parse(message.body);
         uBalance.innerText = balance + ' BBC';
         cBalance.innerText = balance + ' BBC';
@@ -43,7 +47,7 @@ function handleSubmit(event, formType) {
 
     const value = formType === 'deposit' ? document.getElementById('deposit-amount').value : document.getElementById('withdraw-amount').value;
     if (formType === 'deposit'){
-        fetch('http://localhost:8072/v1/wallet/deposit/user-name/Bykwarb?value=' + document.getElementById('deposit-amount').value, {
+        fetch('http://localhost:8072/v1/wallet/deposit/user-name/' + username + '?value=' + document.getElementById('deposit-amount').value, {
             method: 'PUT',
             headers: {
                 'Authorization': token,
@@ -56,7 +60,7 @@ function handleSubmit(event, formType) {
                 // handle error
             });
     }else if (formType === 'withdraw'){
-        fetch('http://localhost:8072/v1/wallet/debited/user-name/Bykwarb?debited-value=' + document.getElementById('withdraw-amount').value, {
+        fetch('http://localhost:8072/v1/wallet/debited/user-name/' + username + '?debited-value=' + document.getElementById('withdraw-amount').value, {
             method: 'PUT',
             headers: {
                 'Authorization': token,

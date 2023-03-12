@@ -4,15 +4,16 @@ import com.example.userservice.utils.ClientContextHolder;
 import com.example.walletservice.entity.Wallet;
 import com.example.walletservice.exception.WalletNotFoundException;
 import com.example.walletservice.repo.WalletRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @Slf4j
 public class DefaultDepositService implements DepositService{
     private final WalletRepository walletRepository;
@@ -24,13 +25,14 @@ public class DefaultDepositService implements DepositService{
         this.messagingTemplate = messagingTemplate;
     }
 
-
     @Override
+    @CircuitBreaker(name = "default")
+    @Retry(name = "default")
     public Wallet depositToWalletByUserName(String userName, Double value) throws WalletNotFoundException {
         Wallet wallet = walletRepository.getWalletByUserName(userName);
-        if (Objects.isNull(wallet)) {
+        if (wallet == null) {
             log.debug("Wallet not found. User-id: {}. Correlation-id: {}", userName, ClientContextHolder.getContext().getCorrelationId());
-            throw new WalletNotFoundException("Wallet not founded");
+            throw new WalletNotFoundException("Wallet not found");
         }
         wallet.setValue(wallet.getValue() + value);
         walletRepository.save(wallet);
@@ -39,15 +41,16 @@ public class DefaultDepositService implements DepositService{
     }
 
     @Override
+    @CircuitBreaker(name = "default")
+    @Retry(name = "default")
     public Wallet depositToWalletByWalletId(Long walletId, Double value) throws WalletNotFoundException {
-        Optional<Wallet> optionalWallet = walletRepository.findById(walletId);
-        if (optionalWallet.isEmpty()) {
+        Wallet wallet = walletRepository.findById(walletId).orElseThrow(() -> {
             log.debug("Wallet not found. Wallet-id: {}. Correlation-id: {}", walletId, ClientContextHolder.getContext().getCorrelationId());
-            throw new WalletNotFoundException("Wallet not founded");
-        }
-        Wallet wallet = optionalWallet.get();
+            return new WalletNotFoundException("Wallet not found");
+        });
         wallet.setValue(wallet.getValue() + value);
         walletRepository.save(wallet);
+        messagingTemplate.convertAndSendToUser(wallet.getUserName(), "/balance", wallet.getValue());
         return wallet;
     }
 }

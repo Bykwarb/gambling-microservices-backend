@@ -37,6 +37,7 @@ export default class Slot {
     if (isExpired) {
       this.removeCookie("token");
       this.removeCookie("userName");
+      this.removeCookie("email");
       this.showLoginPopup();
       return;
     } else {

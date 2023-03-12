@@ -6,6 +6,5 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface AuthService {
-    ResponseEntity<String> auth(String email, String password);
-    UsernamePasswordAuthenticationToken verify(String token);
+    ResponseEntity<?> auth(String email, String password);
 }

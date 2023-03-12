@@ -3,6 +3,7 @@ package com.example.authservice.user;
 import com.example.authservice.utils.UserDto;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,6 +16,7 @@ import java.util.concurrent.TimeoutException;
 
 @Service
 @ComponentScan("com.example.authservice.user")
+@Transactional
 @Slf4j
 public class UserServiceImpl implements UserService{
 

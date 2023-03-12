@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @Getter
 public enum Symbols {
-    CHERRY(0),
-    BAR(1),
-    BELLS(2),
-    LEMON(3),
-    SEVEN(4);
+    CHERRY(1),
+    BAR(2),
+    BELLS(3),
+    LEMON(4),
+    SEVEN(5);
     private final double coefficient;
 
     Symbols(double coefficient) {

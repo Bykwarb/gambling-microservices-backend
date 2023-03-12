@@ -1,4 +1,4 @@
-package com.example.client;
+package com.example.client.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,4 +12,5 @@ public class MainController {
     public String getWalletPage(){
         return "wallet";
     }
+
 }

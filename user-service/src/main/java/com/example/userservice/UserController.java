@@ -34,17 +34,22 @@ public class UserController {
     }
 
 
-    @DeleteMapping("/delete/{userId}")
+    @DeleteMapping("/delete/id/{userId}")
     public ResponseEntity<Response> deleteUser(@PathVariable Long userId){
         userService.deleteUser(userId);
         logger.debug("Delete user. Correlation-id: {}", ClientContextHolder.getContext().getCorrelationId());
         return ResponseEntity.ok(new Response("User successfully deleted"));
     }
 
-    @GetMapping("/get/{userId}")
-    public ResponseEntity<UserEntity> getUser(@PathVariable Long userId) throws UserNotFoundedException {
+    @GetMapping("/get/id/{userId}")
+    public ResponseEntity<UserEntity> getUserById(@PathVariable Long userId) throws UserNotFoundedException {
         logger.debug("Get user. Correlation-id: {}. User id: {}", ClientContextHolder.getContext().getCorrelationId(), userId);
         return ResponseEntity.ok(userService.getUserById(userId));
+    }
+    @GetMapping("/get/username/{username}")
+    public ResponseEntity<UserEntity> getUserByName(@PathVariable String username) throws UserNotFoundedException {
+        logger.debug("Get user. Correlation-id: {}. Username: {}.", ClientContextHolder.getContext().getCorrelationId(), username);
+        return ResponseEntity.ok(userService.getUserByUserName(username));
     }
 
     @ExceptionHandler(value = {UserNotFoundedException.class})
@@ -54,7 +59,7 @@ public class UserController {
 
     @ExceptionHandler(value = UserAlreadyExistException.class)
     public ResponseEntity<Response> userExistHandler(){
-        return new ResponseEntity<>(new Response("User already exist"), HttpStatus.FOUND);
+        return new ResponseEntity<>(new Response("User already exist"), HttpStatus.CONFLICT);
     }
 
     @AllArgsConstructor
