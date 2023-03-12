@@ -11,13 +11,11 @@ public class CheckerImpl implements Checker {
     @Override
     public Map<Lines, Symbols> check(Symbols[][] symbols) {
         Map<Lines, Symbols> result = new EnumMap<>(Lines.class);
-
         checkLine(symbols, result, Lines.First, 0);
         checkLine(symbols, result, Lines.Second, 1);
         checkLine(symbols, result, Lines.Third, 2);
         checkDiagonal(symbols, result, Lines.RightDiagonal, true);
         checkDiagonal(symbols, result, Lines.LeftDiagonal, false);
-
         return result;
     }
 
