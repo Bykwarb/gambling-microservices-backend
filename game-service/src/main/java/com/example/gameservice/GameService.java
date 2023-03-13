@@ -18,17 +18,18 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @Slf4j
 public class GameService {
-    @Autowired
     private final SlotMachine slotMachine;
     @Value("${wallet.uri}")
     private String walletUri;
-    private RestTemplate restTemplate;
+
+    private final RestTemplate restTemplate;
     private Result result;
-    @Autowired
     private final ApplicationEventPublisher publisher;
 
-    public GameService(SlotMachine slotMachine, ApplicationEventPublisher publisher) {
+
+    public GameService(SlotMachine slotMachine, RestTemplate restTemplate, ApplicationEventPublisher publisher) {
         this.slotMachine = slotMachine;
+        this.restTemplate = restTemplate;
         this.publisher = publisher;
     }
 
@@ -62,7 +63,6 @@ public class GameService {
     }
 
     private Response debitedFromWallet(Session session){
-        restTemplate = new RestTemplate();
         String url = walletUri + "/debited/user-name/" + session.getBetterUserName() + "?debited-value=" + session.getBetValue();
         return getResponse(url);
     }
@@ -83,6 +83,5 @@ public class GameService {
         HttpEntity<String> entity = new HttpEntity<>("", httpHeaders);
         return entity;
     }
-
 
 }
