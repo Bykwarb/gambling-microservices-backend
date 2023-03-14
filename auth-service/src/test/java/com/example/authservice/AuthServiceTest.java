@@ -65,7 +65,6 @@ public class AuthServiceTest {
         user.setPassword(password);
         user.setUsername("Test");
         Authentication authentication = new TestingAuthenticationToken(email, password, "ROLE_USER");
-        when(manager.authenticate(new UsernamePasswordAuthenticationToken(email, password))).thenThrow(BadCredentialsException.class);
         ResponseEntity<?> response = authService.auth(email, password);
         assertNotNull(response);
         assertEquals(response.getStatusCode(), HttpStatus.UNAUTHORIZED);
