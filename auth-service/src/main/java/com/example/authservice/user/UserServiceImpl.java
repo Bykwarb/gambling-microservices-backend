@@ -20,20 +20,17 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class UserServiceImpl implements UserService{
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public Optional<User> getByUsrEmail(String email) {
-        return userRepository.findUserByEmail(email);
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @CircuitBreaker(name = "getUserByEmail", fallbackMethod = "failUser")
     @Bulkhead(name= "bulkAuth", fallbackMethod= "failUser")
-
     public User getUserByEmail(String email) {
         Optional<User> optionalUser = userRepository.findUserByEmail(email);
         if (optionalUser.isPresent()){

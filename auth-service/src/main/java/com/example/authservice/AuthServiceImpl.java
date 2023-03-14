@@ -19,12 +19,16 @@ import java.util.Map;
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService{
-    @Autowired
-    private AuthenticationManager manager;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager manager;
+    private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public AuthServiceImpl(AuthenticationManager manager, UserService userService, JwtTokenProvider jwtTokenProvider) {
+        this.manager = manager;
+        this.userService = userService;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
     @Override
     public ResponseEntity<?> auth(String email, String password) {
         log.info("Auth user with credential: {}, {}", email, password);
