@@ -12,7 +12,12 @@ This is a a Wallet Service API, which handles the creation and manipulation of w
 
 - POST /v1/wallet/create
    * Creates a wallet for a user.
-   * Request body: WalletDto
+   * Request body: 
+   ```json
+   {
+   "userName":"John"
+   }
+   ```
    * Response body: 
    ```json
    {
@@ -22,7 +27,13 @@ This is a a Wallet Service API, which handles the creation and manipulation of w
    
 - PUT /v1/wallet/data
    * Changes the username for a wallet.
-   * Request body: UserChangeDto
+   * Request body: 
+   ```json
+   {
+   "oldName":"John",
+   "newName":"Carl"
+   }
+   ```
    * Response body:
    ```json
    {
@@ -41,7 +52,7 @@ This is a a Wallet Service API, which handles the creation and manipulation of w
     "value": 100.0
     }
     ```
-   
+   * 
 - GET /v1/wallet/get/user-name
    * Retrieves a wallet by its associated username.
    * Response body: 
